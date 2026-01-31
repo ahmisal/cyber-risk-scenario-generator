@@ -5,6 +5,7 @@ A production-style agentic AI application that analyzes IT environment documents
 ## Overview
 
 This application uses **CrewAI** to orchestrate 5 specialized AI agents that work together to:
+
 1. Analyze IT environment documentation
 2. Research current cyber threats
 3. Identify vulnerabilities
@@ -13,22 +14,74 @@ This application uses **CrewAI** to orchestrate 5 specialized AI agents that wor
 
 ## Architecture
 
+### System Architecture Diagram
+
+```mermaid
+flowchart TB
+    subgraph UI["🖥️ Gradio Frontend (port 7860)"]
+        Upload["📄 Document Upload"]
+        Report["📊 Risk Report Display"]
+    end
+    
+    subgraph API["⚡ FastAPI Backend (port 8000)"]
+        Routes["/api/v1/analyze"]
+        Extract["Text Extraction<br/>(PDF, DOCX, TXT)"]
+    end
+    
+    subgraph Agents["🤖 CrewAI Multi-Agent System"]
+        A1["1️⃣ Context Analyst"]
+        A2["2️⃣ Threat Specialist"]
+        A3["3️⃣ Vuln Researcher"]
+        A4["4️⃣ Risk Architect"]
+        A5["5️⃣ CISO"]
+    end
+    
+    subgraph Tools["🔧 External Tool Integrations"]
+        T1["SerperDev<br/>Web Search"]
+        T2["CISA.gov<br/>Scraper"]
+        T3["NVD API<br/>CVE Database"]
+    end
+    
+    subgraph Observability["📈 Observability Stack"]
+        LS["LangSmith<br/>LLM Tracing"]
+        Logs["Structured<br/>Logging"]
+    end
+    
+    Upload --> Routes --> Extract --> A1
+    A1 --> A2 --> A3 --> A4 --> A5
+    A2 -.-> T2
+    A3 -.-> T1
+    A3 -.-> T3
+    A5 --> Report
+    Agents --> LS
+    API --> Logs
+```
+
 ### Components
 
 - **FastAPI Backend** (`app/`): RESTful API for processing risk analysis requests
 - **Gradio Frontend** (`ui/`): User-friendly web interface for document upload and report viewing
 - **CrewAI Agents** (`app/agents/`): Multi-agent system for cyber risk analysis
-- **Structured Logging** (`app/observability/`): Application-wide logging configuration
+- **LangSmith Observability** (`app/observability/`): LLM tracing and structured logging
 
-### Agent Workflow
+### Agent Workflow & Prompt Design
 
-The system uses 5 specialized agents that execute sequentially (matching the reference implementation):
+The system uses 5 specialized agents that execute **sequentially**, with each agent's output feeding into the next:
 
-1. **Operational Context Analyst**: Extracts technical environment and critical assets from documentation using FileReadTool
-2. **Threat Intelligence Specialist**: Finds active threat campaigns and ransomware groups targeting identified assets using web search
-3. **Vulnerability Researcher**: Identifies recent CVEs (2023-2025) and configuration weaknesses for the tech stack using web search
-4. **Cyber Risk Architect**: Combines context, threats, and vulnerabilities into 5 distinct realistic risk scenarios
-5. **Chief Information Security Officer (CISO)**: Reviews scenarios and categorizes them into **CRITICAL** and **MONITOR** lists with justification
+| Agent | Role | Goal | Tools |
+|-------|------|------|-------|
+| **1. Context Analyst** | Operational Context Analyst | Extract tech stack and business criticality from documentation | None (LLM only) |
+| **2. Threat Specialist** | Threat Intelligence Specialist | Identify top threats for the technology stack | CISA.gov Scraper |
+| **3. Vuln Researcher** | Vulnerability Researcher | Find critical CVEs (2024-2026) for the stack | NVD API, SerperDev |
+| **4. Risk Architect** | Cyber Risk Architect | Create 3 realistic attack scenarios | None (synthesis) |
+| **5. CISO** | Chief Information Security Officer | Deliver executive summary with CRITICAL/MONITOR categories | None (final report) |
+
+**Prompt Design Rationale:**
+
+- Each agent has a focused, single-responsibility goal
+- Backstories establish expertise and constraints
+- `max_iter=2` prevents infinite tool loops
+- Sequential execution ensures proper context flow
 
 ### Project Structure
 
@@ -70,21 +123,26 @@ The system uses 5 specialized agents that execute sequentially (matching the ref
 1. **Clone the repository** (or navigate to project directory)
 
 2. **Create virtual environment**:
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Configure environment variables**:
+
    ```bash
    cp .env.example .env
    ```
+
    Edit `.env` and add your API keys:
+
    ```
    OPENAI_API_KEY=your_key_here
    SERPER_API_KEY=your_key_here  # Optional
@@ -95,16 +153,18 @@ The system uses 5 specialized agents that execute sequentially (matching the ref
 ### Option 1: Run Backend and Frontend Separately
 
 **Terminal 1 - Start FastAPI backend**:
+
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
 **Terminal 2 - Start Gradio frontend**:
+
 ```bash
 python ui/gradio_app.py
 ```
 
-Then open http://localhost:7860 in your browser.
+Then open <http://localhost:7860> in your browser.
 
 ### Option 2: Run with Docker
 
@@ -118,7 +178,7 @@ docker run -p 8000:8000 -p 7860:7860 --env-file .env cyber-risk-generator
 
 ## Usage
 
-1. **Open the Gradio interface** (http://localhost:7860)
+1. **Open the Gradio interface** (<http://localhost:7860>)
 
 2. **Enter Asset Name**: Provide a descriptive name for the asset being analyzed (e.g., "Production Web Server")
 
@@ -160,11 +220,13 @@ pytest tests/test_api.py
 ## API Endpoints
 
 ### Health Check
+
 ```
 GET /api/v1/health
 ```
 
 ### Risk Analysis
+
 ```
 POST /api/v1/analyze
 Content-Type: multipart/form-data
@@ -175,7 +237,8 @@ Parameters:
 ```
 
 ### API Documentation
-Visit http://localhost:8000/docs for interactive API documentation.
+
+Visit <http://localhost:8000/docs> for interactive API documentation.
 
 ## Configuration
 
@@ -183,7 +246,7 @@ Visit http://localhost:8000/docs for interactive API documentation.
 
 - `OPENAI_API_KEY`: Required. Your OpenAI API key for GPT-4o-mini
 - `SERPER_API_KEY`: Optional. For enhanced web search capabilities
-- `API_URL`: Backend API URL (default: http://localhost:8000/api/v1)
+- `API_URL`: Backend API URL (default: <http://localhost:8000/api/v1>)
 - `LOG_LEVEL`: Logging level (default: INFO)
 
 ## Technologies Used
@@ -210,14 +273,17 @@ Visit http://localhost:8000/docs for interactive API documentation.
 ## Troubleshooting
 
 ### "OPENAI_API_KEY not found"
+
 - Ensure `.env` file exists and contains your API key
 - Or export the environment variable: `export OPENAI_API_KEY=your_key`
 
 ### "Could not connect to backend API"
+
 - Ensure FastAPI server is running on port 8000
 - Check that `API_URL` in `.env` matches your backend URL
 
 ### Analysis takes too long
+
 - Agent execution typically takes 2-5 minutes
 - Complex documents with many technologies may take longer
 - Check logs for detailed execution progress

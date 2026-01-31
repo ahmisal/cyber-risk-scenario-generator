@@ -2,11 +2,23 @@
 
 import os
 import logging
+from dotenv import load_dotenv
 from crewai import Crew, Process
 from app.agents.crew_agents import CyberRiskAgents
 
+# Load environment variables
+load_dotenv()
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# LangSmith Observability - Auto-enabled when LANGCHAIN_API_KEY is set
+if os.getenv("LANGCHAIN_API_KEY"):
+    os.environ["LANGCHAIN_TRACING_V2"] = "true"
+    logger.info(f"LangSmith tracing ENABLED for project: {os.getenv('LANGCHAIN_PROJECT', 'default')}")
+else:
+    logger.info("LangSmith tracing disabled (no LANGCHAIN_API_KEY found)")
+
 
 
 class AgentOrchestrator:
