@@ -1,0 +1,20 @@
+
+This is a sample operational context for a fictional company "Acme Corp".
+Acme Corp operates a cloud-native e-commerce platform hosted on AWS.
+Tech Stack:
+- AWS EKS (Kubernetes)
+- RDS (PostgreSQL)
+- Redis
+- React Frontend (S3 + CloudFront)
+- Node.js Backend
+
+Critical Assets:
+- Customer Database (PII, PCI-DSS scope)
+- Payment Gateway API Keys
+
+Recent Changes:
+- Migrated legacy auth system to Auth0
+- Deployed new inventory microservice
+
+Business Criticality:
+- downtime costs $10k/minute.

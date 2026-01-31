@@ -1,0 +1,9 @@
+# Frontend Gradio Dependencies
+# Python 3.11 compatible
+# Minimal dependencies to communicate with backend API
+
+# Gradio frontend
+gradio==4.7.1
+
+# HTTP client for API calls
+requests==2.31.0
