@@ -106,25 +106,32 @@ docker compose up --build
 # 4. Open browser to http://localhost:7860
 ```
 
-### Option 2: Local Development
+### Option 2: Manual Local Development (Separate Environments)
 
+If you prefer to run the backend and frontend separately (as shown in the demo):
+
+**Terminal 1: Start Backend**
 ```bash
-# 1. Create virtual environment
-python -m venv venv
+# 1. Activate virtual environment
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Configure environment
-cp .env.example .env
-# Edit .env and add your API keys
-
-# 4. Run the application
-python app.py
-
-# 5. Open browser to http://localhost:7860
+# 3. Start FastAPI server
+uvicorn app.main:app --reload --port 8000
 ```
+
+**Terminal 2: Start Frontend**
+```bash
+# 1. Activate virtual environment
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 2. Start Gradio interface
+python ui/gradio_app.py
+```
+
+Then open http://localhost:7860
 
 ---
 
