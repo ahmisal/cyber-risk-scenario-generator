@@ -195,18 +195,17 @@ LANGCHAIN_PROJECT=cyber-risk-generator
 
 ---
 
-## 🔬 Observability
+### 🔬 Observability
 
 This project integrates **LangSmith** for full LLM observability:
 
 - **Trace Visualization**: See each agent's input/output
 - **Latency Monitoring**: Track execution time per agent
 - **Error Debugging**: Identify failures in agent chains
-- **Cost Tracking**: Monitor token usage
 
 To enable, set `LANGCHAIN_API_KEY` in your `.env` file.
 
-![LangSmith Tracing Example](https://smith.langchain.com)
+[View LangSmith Dashboard](https://smith.langchain.com)
 
 ---
 
