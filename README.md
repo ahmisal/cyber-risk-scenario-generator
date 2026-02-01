@@ -111,27 +111,32 @@ docker compose up --build
 If you prefer to run the backend and frontend separately (as shown in the demo):
 
 **Terminal 1: Start Backend**
+
 ```bash
 # 1. Activate virtual environment
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 2. Install dependencies
-pip install -r requirements.txt
+pip install -r requirements-backend.txt
 
 # 3. Start FastAPI server
 uvicorn app.main:app --reload --port 8000
 ```
 
 **Terminal 2: Start Frontend**
+
 ```bash
 # 1. Activate virtual environment
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# 2. Start Gradio interface
+# 2. Install dependencies
+pip install -r requirements-frontend.txt
+
+# 3. Start Gradio interface
 python ui/gradio_app.py
 ```
 
-Then open http://localhost:7860
+Then open <http://localhost:7860>
 
 ---
 
