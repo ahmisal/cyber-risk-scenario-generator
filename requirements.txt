@@ -1,34 +1,24 @@
 # Core dependencies
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-
-python-multipart>=0.0.9,<1.0.0
-
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.9
 
 # Gradio frontend
-gradio==4.44.1
+gradio>=4.0.0
 
-
-# CrewAI and agents
-crewai==0.28.8
-crewai-tools==0.1.6
-
-
+# CrewAI and agents (Stable 1.x)
+crewai>=1.0.0
+crewai-tools>=0.17.0
 
 # File processing
-python-docx==1.1.0
-PyPDF2==3.0.1
+python-docx>=1.1.0
+PyPDF2>=3.0.1
 
-# HTTP client for Gradio
-requests==2.31.0
-
-# Testing
-pytest>=8.0.0,<9.0.0
-pytest-asyncio==0.21.1
-httpx==0.25.2
+# HTTP client
+requests>=2.31.0
 
 # Environment variables
-python-dotenv==1.0.0
+python-dotenv>=1.0.0
 
-# Observability (LangSmith tracing)
+# Observability
 langsmith>=0.1.0

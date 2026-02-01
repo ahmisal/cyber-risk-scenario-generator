@@ -1,18 +1,33 @@
-# Cyber Risk Scenario Generator
+# 🛡️ Cyber Risk Scenario Generator
 
-A production-style agentic AI application that analyzes IT environment documents and generates comprehensive cyber risk reports using a multi-agent AI system.
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![CrewAI](https://img.shields.io/badge/CrewAI-Multi--Agent-green.svg)](https://www.crewai.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Overview
+> **Agentic AI Bootcamp - Capstone Project**  
+> A production-style multi-agent AI application that analyzes IT infrastructure documents and generates executive-level cyber risk reports.
 
-This application uses **CrewAI** to orchestrate 5 specialized AI agents that work together to:
+---
 
-1. Analyze IT environment documentation
-2. Research current cyber threats
-3. Identify vulnerabilities
-4. Create risk scenarios
-5. Generate prioritized risk reports
+## 🎯 Problem Statement
 
-## Architecture
+Security teams spend **weeks manually analyzing** IT environment documents to identify cyber risks. This project automates that process using **5 specialized AI agents** that collaboratively analyze documentation, research current threats, identify vulnerabilities, and produce prioritized risk reports—in minutes instead of weeks.
+
+---
+
+## ✨ Features
+
+- **📄 Multi-Format Support**: Upload TXT, DOCX, or PDF documents
+- **🤖 5 Specialized AI Agents**: Each with distinct expertise and responsibilities
+- **🔍 Real-Time Threat Intelligence**: Integrates with CISA.gov, NVD, and web search
+- **📊 Executive Reports**: CRITICAL and MONITOR risk categories with justification
+- **🔬 LangSmith Observability**: Full LLM call tracing and debugging
+- **🐳 Docker Ready**: One-command deployment with `docker compose up`
+
+---
+
+## 🏗️ Architecture
 
 ### System Architecture Diagram
 
@@ -23,11 +38,6 @@ flowchart TB
         Report["📊 Risk Report Display"]
     end
     
-    subgraph API["⚡ FastAPI Backend (port 8000)"]
-        Routes["/api/v1/analyze"]
-        Extract["Text Extraction<br/>(PDF, DOCX, TXT)"]
-    end
-    
     subgraph Agents["🤖 CrewAI Multi-Agent System"]
         A1["1️⃣ Context Analyst"]
         A2["2️⃣ Threat Specialist"]
@@ -36,188 +46,209 @@ flowchart TB
         A5["5️⃣ CISO"]
     end
     
-    subgraph Tools["🔧 External Tool Integrations"]
+    subgraph Tools["🔧 External Integrations"]
         T1["SerperDev<br/>Web Search"]
-        T2["CISA.gov<br/>Scraper"]
+        T2["CISA.gov<br/>Threat Feed"]
         T3["NVD API<br/>CVE Database"]
     end
     
-    subgraph Observability["📈 Observability Stack"]
-        LS["LangSmith<br/>LLM Tracing"]
-        Logs["Structured<br/>Logging"]
+    subgraph Observability["📈 Observability"]
+        LS["LangSmith Tracing"]
+        Logs["Structured Logging"]
     end
     
-    Upload --> Routes --> Extract --> A1
+    Upload --> A1
     A1 --> A2 --> A3 --> A4 --> A5
     A2 -.-> T2
     A3 -.-> T1
     A3 -.-> T3
     A5 --> Report
     Agents --> LS
-    API --> Logs
 ```
-
-### Components
-
-- **FastAPI Backend** (`app/`): RESTful API for processing risk analysis requests
-- **Gradio Frontend** (`ui/`): User-friendly web interface for document upload and report viewing
-- **CrewAI Agents** (`app/agents/`): Multi-agent system for cyber risk analysis
-- **LangSmith Observability** (`app/observability/`): LLM tracing and structured logging
 
 ### Agent Workflow & Prompt Design
 
-The system uses 5 specialized agents that execute **sequentially**, with each agent's output feeding into the next:
+The system uses **5 specialized agents** executing **sequentially**, where each agent's output feeds into the next:
 
-| Agent | Role | Goal | Tools |
-|-------|------|------|-------|
-| **1. Context Analyst** | Operational Context Analyst | Extract tech stack and business criticality from documentation | None (LLM only) |
-| **2. Threat Specialist** | Threat Intelligence Specialist | Identify top threats for the technology stack | CISA.gov Scraper |
-| **3. Vuln Researcher** | Vulnerability Researcher | Find critical CVEs (2024-2026) for the stack | NVD API, SerperDev |
-| **4. Risk Architect** | Cyber Risk Architect | Create 3 realistic attack scenarios | None (synthesis) |
-| **5. CISO** | Chief Information Security Officer | Deliver executive summary with CRITICAL/MONITOR categories | None (final report) |
+| # | Agent | Role | Goal | Tools |
+|---|-------|------|------|-------|
+| 1 | **Context Analyst** | Operational Context Analyst | Extract tech stack, compliance needs, and business criticality | LLM only |
+| 2 | **Threat Specialist** | Threat Intelligence Specialist | Identify active threat campaigns targeting the tech stack | CISA.gov Scraper |
+| 3 | **Vuln Researcher** | Vulnerability Researcher | Find critical CVEs (2024-2026) for identified technologies | NVD API, SerperDev |
+| 4 | **Risk Architect** | Cyber Risk Architect | Create 3 realistic attack scenarios with business impact | Synthesis |
+| 5 | **CISO** | Chief Information Security Officer | Deliver executive summary with CRITICAL/MONITOR categories | Final Report |
 
-**Prompt Design Rationale:**
+**Design Rationale:**
 
-- Each agent has a focused, single-responsibility goal
-- Backstories establish expertise and constraints
+- Single-responsibility agents for focused expertise
+- Sequential execution ensures proper context propagation
 - `max_iter=2` prevents infinite tool loops
-- Sequential execution ensures proper context flow
+- Temperature 0.2 for consistent, professional output
 
-### Project Structure
+---
+
+## 🚀 Quick Start
+
+### Option 1: Docker Compose (Recommended)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/ahmisal/cyber-risk-scenario-generator.git
+cd cyber-risk-scenario-generator
+
+# 2. Create .env file with your API keys
+cp .env.example .env
+# Edit .env and add your keys
+
+# 3. Run with Docker Compose
+docker compose up --build
+
+# 4. Open browser to http://localhost:7860
+```
+
+### Option 2: Local Development
+
+```bash
+# 1. Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Configure environment
+cp .env.example .env
+# Edit .env and add your API keys
+
+# 4. Run the application
+python app.py
+
+# 5. Open browser to http://localhost:7860
+```
+
+---
+
+## ⚙️ Configuration
+
+### Required Environment Variables
+
+Create a `.env` file with the following:
+
+```ini
+# Required
+OPENAI_API_KEY=sk-proj-...
+
+# Optional (enhances functionality)
+SERPER_API_KEY=your_key_here
+NVD_API_KEY=your_key_here
+
+# LangSmith Observability (get key at https://smith.langchain.com)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+LANGCHAIN_API_KEY=lsv2_...
+LANGCHAIN_PROJECT=cyber-risk-generator
+```
+
+---
+
+## 📁 Project Structure
 
 ```
 .
-├── app/
-│   ├── main.py                 # FastAPI application entry point
-│   ├── api/
-│   │   └── routes.py           # API endpoints
-│   ├── agents/
-│   │   ├── crew_agents.py      # Agent definitions
-│   │   └── orchestrator.py     # Agent orchestration
-│   ├── models/
-│   │   └── schemas.py          # Pydantic models
-│   ├── observability/
-│   │   └── logging_conf.py     # Logging configuration
-│   └── tools/                  # External tools (CrewAI tools)
-├── ui/
-│   └── gradio_app.py           # Gradio frontend
-├── tests/
-│   ├── test_api.py             # API endpoint tests
-│   └── test_agents.py          # Agent orchestration tests
+├── app.py                      # Unified application entry point
+├── docker-compose.yml          # One-command Docker deployment
+├── Dockerfile                  # Container configuration
 ├── requirements.txt            # Python dependencies
-├── Dockerfile                  # Docker configuration
-├── .env.example               # Environment variables template
-└── README.md                  # This file
+├── .env.example                # Environment template (no secrets)
+│
+├── app/                        # Backend application
+│   ├── main.py                 # FastAPI entry point
+│   ├── api/routes.py           # REST API endpoints
+│   ├── agents/
+│   │   ├── crew_agents.py      # 5 Agent definitions
+│   │   └── orchestrator.py     # Agent workflow orchestration
+│   ├── models/schemas.py       # Pydantic data models
+│   └── observability/          # Logging configuration
+│
+├── ui/                         # Frontend
+│   └── gradio_app.py           # Gradio web interface
+│
+└── tests/                      # Test suite
+    ├── test_api.py             # API endpoint tests
+    ├── test_agents.py          # Agent unit tests
+    └── test_end_to_end.py      # Integration tests
 ```
 
-## Setup
+---
 
-### Prerequisites
+## 🔬 Observability
 
-- Python 3.11+
-- OpenAI API key
-- (Optional) Serper API key for enhanced web search
+This project integrates **LangSmith** for full LLM observability:
 
-### Installation
+- **Trace Visualization**: See each agent's input/output
+- **Latency Monitoring**: Track execution time per agent
+- **Error Debugging**: Identify failures in agent chains
+- **Cost Tracking**: Monitor token usage
 
-1. **Clone the repository** (or navigate to project directory)
+To enable, set `LANGCHAIN_API_KEY` in your `.env` file.
 
-2. **Create virtual environment**:
+![LangSmith Tracing Example](https://smith.langchain.com)
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+---
 
-3. **Install dependencies**:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment variables**:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Edit `.env` and add your API keys:
-
-   ```
-   OPENAI_API_KEY=your_key_here
-   SERPER_API_KEY=your_key_here  # Optional
-   ```
-
-## Running Locally
-
-### Option 1: Run Backend and Frontend Separately
-
-**Terminal 1 - Start FastAPI backend**:
-
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-
-**Terminal 2 - Start Gradio frontend**:
-
-```bash
-python ui/gradio_app.py
-```
-
-Then open <http://localhost:7860> in your browser.
-
-### Option 2: Run with Docker
-
-```bash
-# Build image
-docker build -t cyber-risk-generator .
-
-# Run container
-docker run -p 8000:8000 -p 7860:7860 --env-file .env cyber-risk-generator
-```
-
-## Usage
-
-1. **Open the Gradio interface** (<http://localhost:7860>)
-
-2. **Enter Asset Name**: Provide a descriptive name for the asset being analyzed (e.g., "Production Web Server")
-
-3. **Upload Document**: Upload a TXT, DOCX, or PDF file describing your IT environment, including:
-   - Technologies and software versions
-   - Infrastructure components
-   - Network architecture
-   - Security controls
-
-4. **Click "Analyze Risk"**: The system will:
-   - Extract text from your document
-   - Execute the 5-agent workflow
-   - Generate a comprehensive risk report
-
-5. **Review Report**: The Markdown-formatted report includes:
-   - IT Environment Overview (tech stack, compliance needs, business criticality)
-   - Active Threat Campaigns (ransomware groups, threat actors)
-   - Identified Vulnerabilities (CVEs 2023-2025, configuration weaknesses)
-   - 5 Distinct Cyber Risk Scenarios
-   - **CRITICAL** and **MONITOR** Risk Categories with justification
-
-## Testing
-
-Run tests with pytest:
+## 🧪 Testing
 
 ```bash
 # Run all tests
 pytest
 
-# Run with coverage
+# Run with coverage report
 pytest --cov=app tests/
 
 # Run specific test file
-pytest tests/test_api.py
+pytest tests/test_api.py -v
 ```
 
-**Note**: Agent orchestration tests require `OPENAI_API_KEY` to be set in your environment.
+---
 
-## API Endpoints
+## 📖 Usage Guide
+
+1. **Open the Application**: Navigate to `http://localhost:7860`
+
+2. **Enter Asset Name**: Provide a descriptive name (e.g., "Production Web Server")
+
+3. **Upload Document**: Upload a file describing your IT environment:
+   - Technologies and software versions
+   - Infrastructure components
+   - Network architecture
+   - Compliance requirements
+
+4. **Click "Analyze Risk"**: The 5-agent workflow executes (2-5 minutes)
+
+5. **Review Report**: Executive-grade report with:
+   - IT Environment Overview
+   - Active Threat Campaigns
+   - Identified Vulnerabilities (CVEs)
+   - Attack Scenarios
+   - **CRITICAL** and **MONITOR** Risk Categories
+
+---
+
+## 🛠️ Technologies
+
+| Component | Technology |
+|-----------|------------|
+| **Agent Framework** | CrewAI |
+| **LLM** | OpenAI GPT-4o-mini |
+| **Backend** | FastAPI |
+| **Frontend** | Gradio |
+| **Observability** | LangSmith |
+| **Container** | Docker |
+| **Testing** | Pytest |
+
+---
+
+## 📝 API Reference
 
 ### Health Check
 
@@ -232,62 +263,33 @@ POST /api/v1/analyze
 Content-Type: multipart/form-data
 
 Parameters:
-- asset_name: string (form field)
-- file: file upload (TXT, DOCX, or PDF)
+- asset_name: string
+- file: file (TXT, DOCX, PDF)
 ```
 
-### API Documentation
+Interactive API docs available at: `http://localhost:8000/docs`
 
-Visit <http://localhost:8000/docs> for interactive API documentation.
+---
 
-## Configuration
+## 🐛 Troubleshooting
 
-### Environment Variables
+| Issue | Solution |
+|-------|----------|
+| `OPENAI_API_KEY not found` | Ensure `.env` file exists with valid key |
+| `Analysis takes too long` | Normal execution is 2-5 minutes; check logs for progress |
+| `LangSmith traces not appearing` | Verify `LANGCHAIN_API_KEY` is set correctly |
+| `Docker build fails` | Ensure Docker Desktop is running |
 
-- `OPENAI_API_KEY`: Required. Your OpenAI API key for GPT-4o-mini
-- `SERPER_API_KEY`: Optional. For enhanced web search capabilities
-- `API_URL`: Backend API URL (default: <http://localhost:8000/api/v1>)
-- `LOG_LEVEL`: Logging level (default: INFO)
+---
 
-## Technologies Used
+## 📄 License
 
-- **FastAPI**: Modern Python web framework
-- **Gradio**: Rapid UI development
-- **CrewAI**: Multi-agent orchestration framework
-- **LangChain**: LLM integration
-- **OpenAI GPT-4o-mini**: Language model
-- **Pydantic**: Data validation
-- **Pytest**: Testing framework
+MIT License - Created for the Agentic AI Bootcamp Capstone Project.
 
-## Constraints & Design Decisions
+---
 
-- **LLM**: GPT-4o-mini with temperature=0.2 (matches reference implementation)
-- **Execution**: Synchronous (simpler, easier to debug)
-- **Tools**: Only CrewAI built-in tools (FileReadTool, SerperDevTool)
-- **No Custom Tools**: Uses standard CrewAI tool ecosystem
-- **No Notebooks**: Pure Python application structure
-- **Agent Definitions**: Exactly match the reference implementation (roles, goals, backstories)
-- **Task Descriptions**: Exactly match the reference implementation
-- **Output Format**: Categorizes risks into CRITICAL and MONITOR lists (matches reference)
+## 👤 Author
 
-## Troubleshooting
-
-### "OPENAI_API_KEY not found"
-
-- Ensure `.env` file exists and contains your API key
-- Or export the environment variable: `export OPENAI_API_KEY=your_key`
-
-### "Could not connect to backend API"
-
-- Ensure FastAPI server is running on port 8000
-- Check that `API_URL` in `.env` matches your backend URL
-
-### Analysis takes too long
-
-- Agent execution typically takes 2-5 minutes
-- Complex documents with many technologies may take longer
-- Check logs for detailed execution progress
-
-## License
-
-This project is created for educational purposes as part of a bootcamp capstone project.
+**Ahmed Salman**  
+Agentic AI Bootcamp - Capstone Project  
+GitHub: [@ahmisal](https://github.com/ahmisal)

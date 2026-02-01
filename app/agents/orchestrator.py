@@ -4,6 +4,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from crewai import Crew, Process
+from langsmith import traceable
 from app.agents.crew_agents import CyberRiskAgents
 
 # Load environment variables
@@ -30,6 +31,7 @@ class AgentOrchestrator:
         self.agents = CyberRiskAgents()
         logger.info("AgentOrchestrator initialized successfully")
     
+    @traceable(name="Cyber Risk Analysis Run")
     def analyze_risk(self, asset_name: str, document_text: str) -> str:
         """
         Execute the complete risk analysis workflow.

@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app/ ./app/
 COPY ui/ ./ui/
+COPY app.py .
 
 # Expose ports
 # 8000 for FastAPI, 7860 for Gradio
@@ -23,5 +24,5 @@ EXPOSE 8000 7860
 ENV PYTHONUNBUFFERED=1
 ENV API_URL=http://localhost:8000/api/v1
 
-# Default command (can be overridden)
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Default command: Run the unified Gradio app
+CMD ["python", "app.py"]
