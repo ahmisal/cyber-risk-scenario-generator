@@ -283,7 +283,6 @@ Parameters:
 Interactive API docs available at:
 
 - `http://localhost:8000/docs` (Manual Logic Option 2)
-- `http://localhost:7860/docs` (Docker/Unified App)
 
 ---
 
